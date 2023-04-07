@@ -1,3 +1,14 @@
+
+# English Dictionary
+
+Hi, this project is a small dictionary made with a free dictionary API.
+
+What I learned in this repository was more about TypeScript and a breakthrough in architecture patterns, layers to be exact.
+
+[Free dictionary API](https://dictionaryapi.dev)
+
+[The design on which I based my project](https://dribbble.com/shots/6029129-Minimal-Dictionary-App)
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
