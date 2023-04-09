@@ -6,6 +6,7 @@ import { MobileLayout, DesktopLayout } from "@/src/layouts/Home"
 import { useContext } from "react"
 import { useRouter } from "next/router"
 import ColorSwitcher from "@/src/components/colorSwitcher"
+import Head from "next/head"
 
 export default function Home() {
   const router = useRouter()
@@ -16,31 +17,38 @@ export default function Home() {
     router.push(`/${word}`)
   }
 
-  if (["XL", "LG"].includes(breakpoint.size)) {
-    return (
-      <DesktopLayout
-        colorSwitcher={
-          <ColorSwitcher
-            themeName={themeName}
-            theme={theme}
-            setter={setTheme}
-          />
-        }
-        searcher={<Searcher theme={theme} onSearch={goToDefinition} />}
-        history={<History theme={theme} />}
-        theme={theme}
-      />
-    )
-  }
-
   return (
-    <MobileLayout
-      colorSwitcher={
-        <ColorSwitcher theme={theme} themeName={themeName} setter={setTheme} />
-      }
-      theme={theme}
-      history={<History theme={theme} />}
-      searcher={<Searcher theme={theme} onSearch={goToDefinition} />}
-    />
-  )
+    <>
+      <Head>
+        <title>Dictionary</title>
+      </Head>
+      {["XL", "LG"].includes(breakpoint.size) ? (
+        <DesktopLayout
+          colorSwitcher={
+            <ColorSwitcher
+              themeName={themeName}
+              theme={theme}
+              setter={setTheme}
+            />
+          }
+          searcher={<Searcher theme={theme} onSearch={goToDefinition} />}
+          history={<History theme={theme} />}
+          theme={theme}
+        />
+      ) : (
+        <MobileLayout
+          colorSwitcher={
+            <ColorSwitcher
+              theme={theme}
+              themeName={themeName}
+              setter={setTheme}
+            />
+          }
+          theme={theme}
+          history={<History theme={theme} />}
+          searcher={<Searcher theme={theme} onSearch={goToDefinition} />}
+        />
+      )}
+    </>
+  );
 }
