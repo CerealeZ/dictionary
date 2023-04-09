@@ -12,6 +12,8 @@ import {
   MobileHeader,
 } from "@/src/layouts/Word"
 import Loading from "@/src/components/loading"
+import Head from "@/src/components/head"
+import { capitalizeWords } from "@/src/utils/utils"
 
 export default function Word() {
   const router = useRouter()
@@ -22,61 +24,69 @@ export default function Word() {
 
   if (!wordName) return null
 
-  if (["XL", "LG"].includes(breakpoint.size)) {
-    return (
-      <DesktopLayout
-        theme={theme}
-        header={
-          <DesktopHeader
-            theme={theme}
-            searcher={<Searcher onSearch={(word) => router.push(`/${word}`)} />}
-            colorSwitcher={
-              <ColorSwitcher
-                themeName={themeName}
-                theme={theme}
-                setter={setTheme}
-              />
-            }
-            maxBodyWidth={800}
-          />
-        }
-        body={
-          <WordDefinition
-            word={wordName}
-            theme={theme}
-            onLoading={<Loading />}
-            onError={<div>{"Not found"}</div>}
-          />
-        }
-      />
-    )
-  }
-
+  const formattedTitle = capitalizeWords(wordName)
+    
   return (
-    <MobileLayout
-      header={(isHidden) => (
-        <MobileHeader
-          isShinkred={isHidden}
-          switcher={
-            <ColorSwitcher
+    <>
+      <Head 
+        title={`${formattedTitle} - Dictionary`}
+        description={`Definitions of the ${formattedTitle} word`}  
+      />
+      {["XL", "LG"].includes(breakpoint.size) ? (
+        <DesktopLayout
+          theme={theme}
+          header={
+            <DesktopHeader
               theme={theme}
-              themeName={themeName}
-              setter={setTheme}
+              searcher={
+                <Searcher onSearch={(word) => router.push(`/${word}`)} />
+              }
+              colorSwitcher={
+                <ColorSwitcher
+                  themeName={themeName}
+                  theme={theme}
+                  setter={setTheme}
+                />
+              }
+              maxBodyWidth={800}
+            />
+          }
+          body={
+            <WordDefinition
+              word={wordName}
+              theme={theme}
+              onLoading={<Loading />}
+              onError={<div>{"Not found"}</div>}
+            />
+          }
+        />
+      ) : (
+        <MobileLayout
+          header={(isHidden) => (
+            <MobileHeader
+              isShinkred={isHidden}
+              switcher={
+                <ColorSwitcher
+                  theme={theme}
+                  themeName={themeName}
+                  setter={setTheme}
+                />
+              }
+              theme={theme}
+              showOnShinkred={wordName}
+            />
+          )}
+          body={
+            <WordDefinition
+              word={wordName}
+              onLoading={<Loading />}
+              theme={theme}
+              onError={<div>{"Not found"}</div>}
             />
           }
           theme={theme}
-          showOnShinkred={wordName}
         />
       )}
-      body={
-        <WordDefinition
-          word={wordName}
-          onLoading={<Loading />}
-          theme={theme}
-          onError={<div>{"Not found"}</div>}
-        />
-      }
-      theme={theme}
-    />
-  )
+    </>
+  );
 }
