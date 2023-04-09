@@ -12,7 +12,8 @@ import {
   MobileHeader,
 } from "@/src/layouts/Word"
 import Loading from "@/src/components/loading"
-import Head from "next/head"
+import Head from "@/src/components/head"
+import { capitalizeWords } from "@/src/utils/utils"
 
 export default function Word() {
   const router = useRouter()
@@ -23,11 +24,14 @@ export default function Word() {
 
   if (!wordName) return null
 
+  const formattedTitle = capitalizeWords(wordName)
+    
   return (
     <>
-      <Head>
-        <title>Dictionary - {wordName}</title>
-      </Head>
+      <Head 
+        title={`${formattedTitle} - Dictionary`}
+        description={`Definitions of the ${formattedTitle} word`}  
+      />
       {["XL", "LG"].includes(breakpoint.size) ? (
         <DesktopLayout
           theme={theme}

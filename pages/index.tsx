@@ -6,7 +6,7 @@ import { MobileLayout, DesktopLayout } from "@/src/layouts/Home"
 import { useContext } from "react"
 import { useRouter } from "next/router"
 import ColorSwitcher from "@/src/components/colorSwitcher"
-import Head from "next/head"
+import Head from "@/src/components/head"
 
 export default function Home() {
   const router = useRouter()
@@ -19,9 +19,7 @@ export default function Home() {
 
   return (
     <>
-      <Head>
-        <title>Dictionary</title>
-      </Head>
+      <Head title="Dictionary" />
       {["XL", "LG"].includes(breakpoint.size) ? (
         <DesktopLayout
           colorSwitcher={
