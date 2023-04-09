@@ -19,7 +19,7 @@ export default function Home() {
 
   return (
     <>
-      <Head title="Dictionary" />
+      <Head title="Dictionary" description="Definitions of the words searched" />
       {["XL", "LG"].includes(breakpoint.size) ? (
         <DesktopLayout
           colorSwitcher={

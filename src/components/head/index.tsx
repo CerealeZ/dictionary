@@ -5,7 +5,7 @@ interface HeadProps {
     description?: string;
 }
 
-export default function index({title, description = "Definitions of the words searched"}: HeadProps) {
+export default function index({title, description}: HeadProps) {
   return (
     <Head>
         <title>{title}</title>
