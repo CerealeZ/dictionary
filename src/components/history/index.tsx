@@ -1,5 +1,4 @@
 import useLocalStorage from "@/src/hooks/useLocalStorage"
-import css from "styled-jsx/css"
 import Link from "next/link"
 import { Theme } from "@/src/interfaces/themes"
 
@@ -12,25 +11,17 @@ export default function History({ onWordClick, theme }: HistoryProps) {
   const [recentWords] = useLocalStorage<string[]>("searchs", [])
 
   return (
-    <div className="history">
-      {recentWords?.map((word, key) => (
-        <Link href={`/${word}`} key={key} legacyBehavior>
-          <a className="history__element">{word}</a>
-        </Link>
-      ))}
-      <style jsx>{`
-        .history {
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-          align-items: start;
-        }
-
-        .history__element {
-          color: ${theme?.color || "auto"};
-          text-decoration: none;
-        }
-      `}</style>
-    </div>
+    <nav>
+      <h2 className="text-2xl font-bold">Recent words</h2>
+      <ul>
+        {recentWords?.map((word, key) => (
+          <li key={key}>
+            <Link className="underline" href={`/${word}`}>
+              {word}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   )
 }

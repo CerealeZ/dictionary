@@ -10,6 +10,38 @@ interface MobileHeaderProps {
   isShinkred: boolean
   showOnShinkred: string
   theme?: Theme
+  children?: React.ReactNode
+}
+
+export const Layout: React.FC<LayoutProps> = (components) => {
+  const [isHidden, setIsHidden] = useState(false)
+  const main = useRef<HTMLDivElement>(null)
+  const renderedHeader =
+    typeof components.header === "function" ? components.header(isHidden) : components.header
+
+  useEffect(function checkBodyIsHidden() {
+    if (!main) return
+    const checkHeaderIsHidden = () => {
+      if (!main.current) return
+      const isOnTop = main.current?.getBoundingClientRect().top <= 0
+      setIsHidden(isOnTop)
+    }
+    window.addEventListener("scroll", checkHeaderIsHidden)
+    return () => {
+      window.removeEventListener("scroll", checkHeaderIsHidden)
+    }
+  }, [])
+
+  return (
+    <div className="flex flex-col relative gap-6">
+      <div className="border-b px-2 py-1 top-0 sticky z-10 bg-white">{renderedHeader}</div>
+      <div ref={main} className="flex-1 px-2 py-1">
+        <div className="m-auto max-w-screen-xl">
+          <main className="max-w-screen-md">{components.children}</main>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({
@@ -51,21 +83,17 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({
 }
 
 interface LayoutProps {
-  header: JSX.Element | ((isHidden: boolean) => JSX.Element)
+  header?: JSX.Element | ((isHidden: boolean) => JSX.Element)
   body?: JSX.Element
-  theme: Theme
+  children?: React.ReactNode
+  theme?: Theme
 }
 
-export const MobileLayout: React.FC<LayoutProps> = ({
-  body,
-  header,
-  theme,
-}) => {
+export const MobileLayout: React.FC<LayoutProps> = ({ body, header, theme }) => {
   const { className: hash, styles } = layoutStyles(theme)
   const [isHidden, setIsHidden] = useState(false)
   const main = useRef<HTMLElement>(null)
-  const renderedHeader =
-    typeof header === "function" ? header(isHidden) : header
+  const renderedHeader = typeof header === "function" ? header(isHidden) : header
 
   useEffect(function checkBodyIsHidden() {
     if (!main) return
@@ -108,7 +136,9 @@ const layoutStyles = (theme?: Theme) => {
       padding: 5px;
       background-color: ${theme?.background || "auto"};
       z-index: 1;
-      transition: font-size 1s, padding 1s;
+      transition:
+        font-size 1s,
+        padding 1s;
     }
 
     .layout__body {
@@ -132,11 +162,7 @@ interface DesktopLayoutProps {
   theme?: Theme
 }
 
-export const DesktopLayout: React.FC<DesktopLayoutProps> = ({
-  body,
-  header,
-  theme,
-}) => {
+export const DesktopLayout: React.FC<DesktopLayoutProps> = ({ body, header, theme }) => {
   return (
     <div className="layout">
       <div className="layout__header">

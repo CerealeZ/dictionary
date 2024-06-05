@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react"
-import Fetcher from "@/src/services/Fetcher"
 import type { Definition } from "@/src/interfaces/word"
+import useSWR from "swr"
+import axios from "axios"
 
 export interface Word {
   wordName: string
@@ -22,46 +22,23 @@ export interface Meaning {
   antonyms: string[]
 }
 
-export default function useDictionary(
-  wordName: string
-) {
-  const [words, setWords] = useState<Word[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [isOkay, setIsOkay] = useState(true)
+export default function useDictionary(wordName: string) {
+  const { data, isLoading, error } = useSWR(wordName, getWordInfo)
+  const words = data?.map(transformDefintion) ?? []
+  const isOkay = !error
 
-  useEffect(
-    function getDefinitions() {
-      setIsLoading(true)
-      Fetcher(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordName}`)
-        .get<Definition[]>()
-        .then((response) => {
-          if (!response.data) {
-            setIsOkay(false)
-            setWords([])
-            return
-          }
-          const words = response.data.map((definition) => {
-            return transformDefintion(definition)
-          })
-          setWords(words)
-          setIsOkay(true)
-        })
-        .finally(() => {
-          setIsLoading(false)
-        })
-    },
-    [wordName]
-  )
-
-  return {words, isLoading, isOkay}
+  return { words, isLoading, isOkay }
 }
+
+const getWordInfo = (wordName: string) =>
+  axios
+    .get<Definition[]>(`https://api.dictionaryapi.dev/api/v2/entries/en/${wordName}`)
+    .then((response) => response.data)
 
 const transformDefintion = (definition: Definition): Word => {
   const wordName = definition.word
 
-  const partsOfSpeech = definition.meanings.map(
-    ({ partOfSpeech }) => partOfSpeech
-  )
+  const partsOfSpeech = definition.meanings.map(({ partOfSpeech }) => partOfSpeech)
 
   const phonetic = definition.phonetic
     ? definition.phonetic

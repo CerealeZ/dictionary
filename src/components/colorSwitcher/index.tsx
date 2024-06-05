@@ -10,14 +10,17 @@ interface ColorSwiter {
 
 export default function ColorSwitcher({ setter, themeName, theme }: ColorSwiter) {
   return (
-    <button onClick={() => setter(themeName === "black" ? "white" : "black")}>
+    <button
+      aria-label="Change theme"
+      onClick={() => setter(themeName === "black" ? "white" : "black")}
+    >
       <FontAwesomeIcon icon={themeName === "black" ? faSun : faMoon} />
       <style jsx>{`
         button {
           background-color: transparent;
           border: none;
           cursor: pointer;
-          color: ${theme?.color || 'auto'};
+          color: ${theme?.color || "auto"};
         }
       `}</style>
     </button>
